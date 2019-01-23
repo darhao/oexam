@@ -9,3 +9,9 @@ oexam/.settings/org.eclipse.core.resources.prefs
 oexam/target/classes/META-INF/MANIFEST.MF
 oexam/.classpath
 oexam/.project
+oexam/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+oexam/target/oexam-0.2-shaded.jar
+oexam/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+oexam/target/original-oexam-0.2.jar
+oexam/target/oexam-0.2.jar
+oexam/target/maven-archiver/pom.properties

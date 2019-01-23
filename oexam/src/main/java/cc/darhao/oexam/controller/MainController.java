@@ -1,22 +1,18 @@
 package cc.darhao.oexam.controller;
 
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Record;
-
-import cc.darhao.oexam.dao.SQL;
+import cc.darhao.oexam.main.Main;
 import cc.darhao.oexam.model.Question;
-import cc.darhao.oexam.model.Result;
 import cc.darhao.oexam.model.User;
 import cc.darhao.oexam.model.bo.ExameeGradeDetail;
-import cc.darhao.oexam.util.StackExceptionGetter;
-import javafx.application.Platform;
+import cc.darhao.oexam.model.bo.LoginResult;
+import cc.darhao.oexam.service.MainService;
+import cc.darhao.oexam.util.ThreadBridge;
+import cc.darhao.oexam.util.ThreadBridge.Response;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -29,15 +25,13 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 
 /**
+ * 主控制器
  * <br>
  * <b>2018年1月15日</b>
  * @author 沫熊工作室 <a href="http://www.darhao.cc">www.darhao.cc</a>
  */
-public class MainController implements Initializable, UncaughtExceptionHandler {
+public class MainController implements Initializable {
 
-	//是否处于调试模式
-	public static final boolean DEBUG = false;
-	
 	@FXML
 	private Group examGp;
 	@FXML
@@ -66,20 +60,22 @@ public class MainController implements Initializable, UncaughtExceptionHandler {
 	private RadioButton q1cRb, q2cRb, q3cRb, q4cRb, q5cRb, q6cRb, q7cRb, q8cRb, q9cRb ,q10cRb;
 	
 	
-	private List<ExameeGradeDetail> exameeGradeDetails = new ArrayList<>();
+	//=======页面缓存=======
 	
+	//考核者
 	private User examer;
-	
+	//被考核者列表
 	private User currentExamee;
+	//考核细节
+	private List<ExameeGradeDetail> exameeGradeDetails = new ArrayList<>();
 	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		Thread.setDefaultUncaughtExceptionHandler(this);
 		initQuestionList();
 		
-		if(DEBUG) {
-			keyTf.setText("6224F86DD7B07E8A23D246BCDDBBC41F");
+		if(Main.DEBUG) {
+			keyTf.setText("6224F86DD7B07E8A23D246BCDDBBC41E");
 			for (Node node : examGp.getChildren()) {//清空单选框
 				if(node.getClass().equals(RadioButton.class)) {
 					RadioButton rb = (RadioButton) node;
@@ -94,9 +90,10 @@ public class MainController implements Initializable, UncaughtExceptionHandler {
 	 * 初始化问题集
 	 */
 	private void initQuestionList() {
-		new Thread(()-> {
-			List<Question> questions = Question.dao.find(SQL.GET_ALL_QUESTIONS);
-			Platform.runLater(()->{
+		ThreadBridge.call(MainService.class, "listQuestions", new Response<List<Question>>() {
+
+			@Override
+			public void onReturn(List<Question> questions) {
 				q1Lb.setText(questions.get(0).getDesc());
 				q2Lb.setText(questions.get(1).getDesc());
 				q3Lb.setText(questions.get(2).getDesc());
@@ -107,8 +104,9 @@ public class MainController implements Initializable, UncaughtExceptionHandler {
 				q8Lb.setText(questions.get(7).getDesc());
 				q9Lb.setText(questions.get(8).getDesc());
 				q10Lb.setText(questions.get(9).getDesc());
-			});
-		}).start();
+			}
+			
+		}, null);
 	}
 
 
@@ -122,53 +120,51 @@ public class MainController implements Initializable, UncaughtExceptionHandler {
 	public void onLoginBtClick() {
 		keyTf.setDisable(true);
 		loginBt.setDisable(true);
-		new Thread(()->{
-			String key = keyTf.getText();
-			examer = User.dao.findFirst(SQL.GET_USER_INFO_BY_KEI, key);
-			if(examer != null) {
-				Record lastExamDateRecord = Db.findFirst(SQL.GET_LAST_EXAM_TIME_BY_USER_ID, examer.getId());
-				if(lastExamDateRecord == null || new Date().getTime() - lastExamDateRecord.getDate("time").getTime() > 6 * 24 * 60 * 60 * 1000) {
-					initExameeGradeDetail(examer.getName());
-					Platform.runLater(()->{
-						examerLb.setText(examer.getName());
-						examGp.setDisable(false);
-						exameeLb.setText(exameeGradeDetails.get(0).getExamee().getName());
-						pageLb.setText("1 / " + exameeGradeDetails.size());
-					});
-				}else {
-					Platform.runLater(()->{
-						new Alert(AlertType.ERROR, "每次考核时间必须间隔6日").showAndWait();
-						keyTf.setDisable(false);
-						loginBt.setDisable(false);
-					});
-				}
-			}else {
-				Platform.runLater(()->{
+		String key = keyTf.getText();
+		
+		ThreadBridge.call(MainService.class, "login", new Response<LoginResult>() {
+
+			@Override
+			public void onReturn(LoginResult result) {
+				switch (result.getResult()) {
+				case KEY_ERROR:
 					new Alert(AlertType.ERROR, "不存在该key").showAndWait();
 					keyTf.setDisable(false);
 					loginBt.setDisable(false);
-				});
+					break;
+				case DAY_ERROR:
+					new Alert(AlertType.ERROR, "今天不能进行考核，请在每周最后一个工作日进行考核").showAndWait();
+					keyTf.setDisable(false);
+					loginBt.setDisable(false);
+					break;
+				case CYCLE_ERROR:
+					new Alert(AlertType.ERROR, "每次考核时间必须间隔5日").showAndWait();
+					keyTf.setDisable(false);
+					loginBt.setDisable(false);
+					break;
+				case SUCCEED:
+					examer = result.getExamer();
+					List<User> examees = result.getExamee();
+					currentExamee = examees.get(0);
+					for (User examee : examees) {
+						ExameeGradeDetail exameeGradeDetail = new ExameeGradeDetail();
+						exameeGradeDetail.setExamee(examee);
+						exameeGradeDetails.add(exameeGradeDetail);
+					}
+					examerLb.setText(examer.getName());
+					examGp.setDisable(false);
+					exameeLb.setText(exameeGradeDetails.get(0).getExamee().getName());
+					pageLb.setText("1 / " + exameeGradeDetails.size());
+					break;
+				default:
+					break;
+				}
 			}
-		}).start();
-		
-		
+			
+		}, key);
 	}
 	
 
-	/**
-	 * 初始化受评人分数详情列表
-	 */
-	private void initExameeGradeDetail(String examer) {
-		List<User> examees = User.dao.find(SQL.GET_USER_INFO_BY_NOT_NAME_AND_NOT_ADMIN, examer);
-		currentExamee = examees.get(0);
-		for (User examee : examees) {
-			ExameeGradeDetail exameeGradeDetail = new ExameeGradeDetail();
-			exameeGradeDetail.setExamee(examee);
-			exameeGradeDetails.add(exameeGradeDetail);
-		}
-	}
-	
-	
 	/**
 	 * 如果不是第一页，则更新ExameeGradeDetail，翻上一页，更新评价界面
 	 */
@@ -256,73 +252,23 @@ public class MainController implements Initializable, UncaughtExceptionHandler {
 	 */
 	public void onSubmitBtClick() {
 		submitBt.setDisable(true);
-		new Thread(()->{
-			String requriedExamDay1, requriedExamDay2;
-			if(DEBUG) {
-				requriedExamDay1 = requriedExamDay2 = new Date().getDay() +"";
-			}else {
-				requriedExamDay1 = "5";
-				requriedExamDay2 = "6";
-			}
-			String day = Db.findFirst(SQL.GET_WHAT_DAY_IS_TODAY).getStr("day");
-			if(!day.equals(requriedExamDay1) && !day.equals(requriedExamDay2)) {
-				Platform.runLater(()->{
-					new Alert(AlertType.ERROR, "今天不能进行考核，请在每周最后一个工作日进行考核").showAndWait();
+		//把最后一页更新到考核细节里
+		exameeGradeDetails.set((getCurrentPage() - 1), dumpExameeGradeDetail());
+		
+		ThreadBridge.call(MainService.class, "submitExam", new Response<Boolean>() {
+
+			@Override
+			public void onReturn(Boolean result) {
+				if(!result) {
+					new Alert(AlertType.ERROR, "还有项目没填完").showAndWait();
 					submitBt.setDisable(false);
-				});
-			}else {
-				exameeGradeDetails.set((getCurrentPage() - 1), dumpExameeGradeDetail());
-				for (ExameeGradeDetail exameeGradeDetail : exameeGradeDetails) {
-					short[] answers = exameeGradeDetail.getAnswers();
-					for (short answer : answers) {
-						if(answer == -1) {
-							Platform.runLater(()->{
-								new Alert(AlertType.ERROR, "还有项目没填完").showAndWait();
-								submitBt.setDisable(false);
-							});
-							return;
-						}
-					}
-				}
-				//计算平均值并插入数据库
-				for (ExameeGradeDetail exameeGradeDetail : exameeGradeDetails) {
-					int standardGradeSum = 0, teamGradeSum = 0;
-					short[] answers = exameeGradeDetail.getAnswers();
-					for (int i = 0 ; i < answers.length ; i++) {
-						if(i < 5) {
-							standardGradeSum += answers[i];
-						}else {
-							teamGradeSum += answers[i];
-						}
-					}
-					Result result = new Result();
-					result.setExamer(examer.getId());
-					result.setExamee(exameeGradeDetail.getExamee().getId());
-					result.setStandardGrade(standardGradeSum);
-					result.setTeamGrade(teamGradeSum);
-					result.save();
-				}
-				Platform.runLater(()->{
+				}else {
 					new Alert(AlertType.INFORMATION, "考核完成，下一次考核在6天后解锁").showAndWait();
 					System.exit(0);
-				});
+				}
 			}
 			
-		}).start();;
+		}, exameeGradeDetails, examer);
 	}
-
-
-	@Override
-	public void uncaughtException(Thread t, Throwable e) {
-		if(DEBUG) {
-			e.printStackTrace();
-		}else {
-			Platform.runLater(()->{
-				new Alert(AlertType.ERROR, StackExceptionGetter.getStackTrace(e)).showAndWait();
-				System.exit(0);
-			});
-		}
-	}
-	
 	
 }

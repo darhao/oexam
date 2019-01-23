@@ -1,6 +1,6 @@
 package cc.darhao.oexam.model.bo;
 
-import cc.darhao.oexam.controller.MainController;
+import cc.darhao.oexam.main.Main;
 import cc.darhao.oexam.model.User;
 
 /**
@@ -19,7 +19,7 @@ public class ExameeGradeDetail {
 	public ExameeGradeDetail() {
 		this.answers = new short[10];
 		for (int i = 0; i < answers.length; i++) {
-			if(MainController.DEBUG) {
+			if(Main.DEBUG) {
 				answers[i] = 1;
 			}else {
 				answers[i] = -1;

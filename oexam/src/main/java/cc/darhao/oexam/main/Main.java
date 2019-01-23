@@ -2,6 +2,7 @@ package cc.darhao.oexam.main;
 
 import cc.darhao.dautils.api.ResourcesUtil;
 import cc.darhao.oexam.dao.DBManager;
+import cc.darhao.oexam.util.ThreadBridge;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,9 +16,12 @@ import javafx.stage.Stage;
  */
 public class Main extends Application{
 
-	private static final String VESION = "V0.1";
+	private static final String VESION = "V0.2";
 	
 	private static final String NAME = "Oexam";
+	
+	//是否处于调试模式
+	public static final boolean DEBUG = false;
 
 	
 	@Override
@@ -36,6 +40,7 @@ public class Main extends Application{
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Thread.setDefaultUncaughtExceptionHandler(new ThreadBridge());
 		DBManager.start();
 		launch(args);
 	}
