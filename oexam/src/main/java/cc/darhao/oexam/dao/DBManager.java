@@ -12,7 +12,7 @@ public class DBManager {
 
 	public static final String DB_USER = "oexam";
 	
-	public static final String DB_PASSWORD = "bobobo";
+	public static final String DB_PASSWORD = "bobobobo";
 	
 	
 	public static void start() {

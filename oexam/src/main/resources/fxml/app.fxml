@@ -37,7 +37,10 @@
             <Label fx:id="q5Lb" layoutX="28.0" layoutY="401.0" text="问题5" />
             <RadioButton fx:id="q10aRb" layoutX="26.0" layoutY="784.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q10" />
             <Label fx:id="q10Lb" layoutX="28.0" layoutY="749.0" text="问题10" />
-            <RadioButton fx:id="q3cRb" layoutX="260.0" layoutY="296.0" mnemonicParsing="false" text="有待加强" toggleGroup="$q3" />
+            <RadioButton fx:id="q3cRb" layoutX="260.0" layoutY="296.0" mnemonicParsing="false" text="有待加强">
+               <toggleGroup>
+                  <ToggleGroup fx:id="q33" />
+               </toggleGroup></RadioButton>
             <RadioButton fx:id="q9bRb" layoutX="137.0" layoutY="711.0" mnemonicParsing="false" text="感觉良好">
                <toggleGroup>
                   <ToggleGroup fx:id="q9" />
@@ -58,7 +61,10 @@
             <RadioButton fx:id="q8cRb" layoutX="260.0" layoutY="641.0" mnemonicParsing="false" text="有待加强" toggleGroup="$q8" />
             <RadioButton fx:id="q2aRb" layoutX="26.0" layoutY="229.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q2" />
             <RadioButton fx:id="q6cRb" layoutX="260.0" layoutY="508.0" mnemonicParsing="false" text="有待加强" toggleGroup="$q6" />
-            <RadioButton fx:id="q4aRb" layoutX="26.0" layoutY="366.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q4" />
+            <RadioButton fx:id="q4aRb" layoutX="26.0" layoutY="366.0" mnemonicParsing="false" text="优秀至极">
+               <toggleGroup>
+                  <ToggleGroup fx:id="q44" />
+               </toggleGroup></RadioButton>
             <Label fx:id="exameeLb" layoutX="96.0" layoutY="93.0" prefHeight="15.0" prefWidth="47.0" text="无" textFill="RED" />
             <Label fx:id="q8Lb" layoutX="28.0" layoutY="605.0" text="问题8" />
             <RadioButton fx:id="q2bRb" layoutX="137.0" layoutY="229.0" mnemonicParsing="false" text="感觉良好" toggleGroup="$q2" />
@@ -71,31 +77,23 @@
                   <ToggleGroup fx:id="q7" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="q4cRb" layoutX="260.0" layoutY="366.0" mnemonicParsing="false" text="有待加强">
-               <toggleGroup>
-                  <ToggleGroup fx:id="q4" />
-               </toggleGroup>
-            </RadioButton>
+            <RadioButton fx:id="q4cRb" layoutX="260.0" layoutY="366.0" mnemonicParsing="false" text="有待加强" toggleGroup="$q44" />
             <Separator layoutX="21.0" layoutY="80.0" prefHeight="9.0" prefWidth="693.0" />
-            <RadioButton fx:id="q3bRb" layoutX="137.0" layoutY="296.0" mnemonicParsing="false" text="感觉良好">
-               <toggleGroup>
-                  <ToggleGroup fx:id="q3" />
-               </toggleGroup>
-            </RadioButton>
+            <RadioButton fx:id="q3bRb" layoutX="137.0" layoutY="296.0" mnemonicParsing="false" text="感觉良好" toggleGroup="$q33" />
             <RadioButton fx:id="q5bRb" layoutX="137.0" layoutY="439.0" mnemonicParsing="false" text="感觉良好" toggleGroup="$q5" />
             <Label fx:id="q4Lb" layoutX="28.0" layoutY="331.0" text="问题4" />
             <RadioButton fx:id="q10cRb" layoutX="260.0" layoutY="784.0" mnemonicParsing="false" text="有待加强" toggleGroup="$q10" />
             <RadioButton fx:id="q8aRb" layoutX="26.0" layoutY="641.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q8" />
             <Label fx:id="pageLb" layoutX="69.0" layoutY="849.0" text="0 / 0" />
             <Label fx:id="q2Lb" layoutX="28.0" layoutY="194.0" text="问题2" />
-            <RadioButton fx:id="q4bRb" layoutX="137.0" layoutY="366.0" mnemonicParsing="false" text="感觉良好" toggleGroup="$q4" />
+            <RadioButton fx:id="q4bRb" layoutX="137.0" layoutY="366.0" mnemonicParsing="false" text="感觉良好" toggleGroup="$q44" />
             <RadioButton fx:id="q7aRb" layoutX="26.0" layoutY="574.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q7" />
             <RadioButton fx:id="q1aRb" layoutX="26.0" layoutY="163.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q1" />
             <Label fx:id="q3Lb" layoutX="28.0" layoutY="260.0" text="问题3" />
             <RadioButton fx:id="q9cRb" layoutX="260.0" layoutY="711.0" mnemonicParsing="false" text="有待加强" toggleGroup="$q9" />
             <Label layoutX="28.0" layoutY="93.0" prefHeight="15.0" prefWidth="74.0" text="当前受评者：" textFill="RED" />
             <Label fx:id="q9Lb" layoutX="28.0" layoutY="676.0" text="问题9" />
-            <RadioButton fx:id="q3aRb" layoutX="26.0" layoutY="296.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q3" />
+            <RadioButton fx:id="q3aRb" layoutX="26.0" layoutY="296.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q33" />
             <RadioButton fx:id="q7cRb" layoutX="260.0" layoutY="574.0" mnemonicParsing="false" text="有待加强" toggleGroup="$q7" />
             <RadioButton fx:id="q1bRb" layoutX="137.0" layoutY="163.0" mnemonicParsing="false" text="感觉良好" toggleGroup="$q1" />
             <RadioButton fx:id="q5aRb" layoutX="26.0" layoutY="439.0" mnemonicParsing="false" text="优秀至极" toggleGroup="$q5" />
