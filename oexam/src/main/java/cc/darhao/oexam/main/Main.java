@@ -16,7 +16,7 @@ import javafx.stage.Stage;
  */
 public class Main extends Application{
 
-	private static final String VESION = "V0.1.3";
+	private static final String VESION = "V0.1.4";
 	
 	private static final String NAME = "Oexam";
 	

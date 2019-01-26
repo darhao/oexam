@@ -6,7 +6,7 @@ public class MainSQL {
 	public static final String GET_USER_INFO_BY_KEI = "SELECT id, name  FROM user WHERE kei = ?";
 	
 	//参数1：将被排除获取的用户的名字
-	public static final String GET_USER_INFO_BY_NOT_NAME_AND_NOT_ADMIN = "SELECT id, name  FROM user WHERE name != ? AND is_admin = 0";
+	public static final String GET_USER_INFO_BY_NOT_ID_AND_NOT_ADMIN = "SELECT id, name  FROM user WHERE id != ? AND is_admin = 0";
 	
 	public static final String GET_ALL_QUESTIONS = "SELECT *  FROM question";
 	

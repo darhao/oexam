@@ -57,7 +57,7 @@ public class MainService {
 		}
 		
 		//获取受评人列表
-		List<User> examees = User.dao.find(MainSQL.GET_USER_INFO_BY_NOT_NAME_AND_NOT_ADMIN, examer);
+		List<User> examees = User.dao.find(MainSQL.GET_USER_INFO_BY_NOT_ID_AND_NOT_ADMIN, examer.getId());
 		result.setExamer(examer);
 		result.setExamee(examees);
 		result.setResult(LoginResultType.SUCCEED);
