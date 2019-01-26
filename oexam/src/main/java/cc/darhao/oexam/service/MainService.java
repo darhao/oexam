@@ -32,7 +32,7 @@ public class MainService {
 		//考核间隔周期
 		final long EXAM_CYCLE = Main.DEBUG ? 0 : (5 * 24 * 60 * 60 * 1000);
 		//要求的考核日
-		final int REQURIED_EXAM_DAY_1 = Main.DEBUG ? new Date().getDay() : 5 , REQURIED_EXAM_DAY_2 = Main.DEBUG ? new Date().getDay() : 5;
+		final int REQURIED_EXAM_DAY_1 = Main.DEBUG ? new Date().getDay() : 5 , REQURIED_EXAM_DAY_2 = Main.DEBUG ? new Date().getDay() : 6;
 		
 		//校验key
 		LoginResult result = new LoginResult();
